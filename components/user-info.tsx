@@ -20,7 +20,7 @@ export const UserInfo = ({ user, label }: UserInfoProps) => {
           Todo: Add image support for credentials users and render them properly
 
         {user?.isOAuth === true && (
-          <img src={user?.image as string} className="rounded-full mx-auto" />
+          <Image src={user?.image as string} height={500} width={500} alt={user?.name} className="rounded-full mx-auto" />
         )}
 
         */}

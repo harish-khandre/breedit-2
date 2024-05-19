@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { UserButton } from "./user-button";
+import Image from "next/image";
 
 interface NavigationItem {
   title: string;
@@ -28,12 +29,7 @@ export default function Navbar() {
       <div className="items-center px-4 max-w-screen-xl mx-auto md:flex md:px-8">
         <div className="flex items-center justify-between py-3 md:py-5 md:block">
           <Link href="/">
-            <img
-              src="https://www.floatui.com/logo.svg"
-              width={120}
-              height={50}
-              alt="Float UI logo"
-            />
+            <Image src="/breedit.png" width={50} height={50} alt="Breedti" />
           </Link>
           <div className="md:hidden">
             <button
