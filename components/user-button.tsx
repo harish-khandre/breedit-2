@@ -24,8 +24,8 @@ export const UserButton = () => {
 
   if (!user) {
     return (
-      <LoginButton mode="modal" asChild>
-        <Button>Login</Button>
+      <LoginButton asChild>
+        <Button>Sign in</Button>
       </LoginButton>
     );
   }
