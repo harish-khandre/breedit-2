@@ -7,7 +7,7 @@ import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 
 export const generateTwoFactorToken = async (email: string) => {
   const token = crypto.randomInt(100_000, 1_000_000).toString();
-  const expires = new Date(new Date().getTime() + 600000); // 10 minutes from now
+  const expires = new Date(new Date().getTime() + 600000);
 
   const existingToken = await getTwoFactorTokenByEmail(email);
 
@@ -30,28 +30,30 @@ export const generateTwoFactorToken = async (email: string) => {
 
 export const generatePasswordResetToken = async (email: string) => {
   const token = uuidv4();
-  const expires = new Date(Date.now() + 3600 * 1000); // 1 hour from now
+  const expires = new Date(Date.now() + 3600 * 1000);
 
-  // Check if an existing password reset token exists for the email
   const existingToken = await getPasswordResetTokenByEmail(email);
 
   if (existingToken) {
-    // If a token exists, delete it before creating a new one
     await db.passwordResetToken.delete({
       where: { id: existingToken.id },
     });
   }
 
-  // Create a new password reset token
-  const passwordResetToken = await db.passwordResetToken.create({
-    data: {
-      email,
-      token,
-      expires,
-    },
-  });
+  try {
+    const passwordResetToken = await db.passwordResetToken.create({
+      data: {
+        email,
+        token,
+        expires,
+      },
+    });
 
-  return passwordResetToken;
+    console.log("passwordResetToken generated!");
+    return passwordResetToken;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const generateVerificationToken = async (email: string) => {

@@ -1,4 +1,5 @@
 "use client";
+
 import { CardWrapper } from "./card-wrapper";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,15 +32,20 @@ export default function ResetForm() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof ResetSchema>) => {
+  const onSubmit = async (values: z.infer<typeof ResetSchema>) => {
     setError("");
     setSuccess("");
 
-    startTransition(() => {
-      reset(values).then((data) => {
+    startTransition(async () => {
+      try {
+        const data = await reset(values);
+        console.log("Reset response:", data);
         setError(data?.error);
         setSuccess(data?.success);
-      });
+      } catch (err) {
+        console.error("Reset error:", err);
+        setError((err as Error).message || "An error occurred");
+      }
     });
   };
 
@@ -71,8 +77,8 @@ export default function ResetForm() {
               )}
             />
           </div>
-          <FormError message={error} />
-          <FormSuccess message={success} />
+          {error && <FormError message={error} />}
+          {success && <FormSuccess message={success} />}
           <Button type="submit" disabled={isPending} className="w-full">
             Send reset email
           </Button>

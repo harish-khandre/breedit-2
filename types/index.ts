@@ -44,9 +44,6 @@ export const NewPasswordSchema = z.object({
 
 export const ResetSchema = z.object({
   email: z.string().email({ message: "Valid email is required" }),
-  password: z.string().min(6, {
-    message: "Password is at least 6 characters long",
-  }),
 });
 
 export const LoginSchema = z.object({
