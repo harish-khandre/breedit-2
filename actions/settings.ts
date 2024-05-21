@@ -38,6 +38,10 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
     const verificationToken = await generateVerificationToken(values.email);
 
+    if (!verificationToken) {
+      return { error: "Failed to create verification token!" };
+    }
+
     await sendVerificationEmail(
       verificationToken.email,
       verificationToken.token,

@@ -38,6 +38,10 @@ export const login = async (
       existingUser.email,
     );
 
+    if (!verificationToken) {
+      return { error: "Failed to create verification token!" };
+    }
+
     await sendVerificationEmail(
       verificationToken.email,
       verificationToken.token,
