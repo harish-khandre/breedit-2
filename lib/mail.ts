@@ -26,11 +26,14 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
 export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/new-verification?token=${token}`;
-
-  await resend.emails.send({
-    from: "mail@breedit.co.in",
-    to: email,
-    subject: "Verify your email address",
-    react: VerificationEmail({ confirmationUrl }),
-  });
+  try {
+    await resend.emails.send({
+      from: "breedit@breedit.co.in",
+      to: email,
+      subject: "Verify your email address",
+      react: VerificationEmail({ confirmationUrl }),
+    });
+  } catch (error) {
+    console.log("sendVerificationEmail error:", error);
+  }
 };

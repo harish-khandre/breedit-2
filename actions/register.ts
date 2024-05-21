@@ -24,16 +24,29 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "User already exists!" };
   }
 
-  await db.user.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword,
-    },
-  });
+  try {
+    await db.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
 
-  const verificationToken = await generateVerificationToken(email);
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+    const verificationToken = await generateVerificationToken(email);
 
-  return { success: "Confirmation email sent!" };
+    if (!verificationToken) {
+      return { error: "Failed to create verification token!" };
+    }
+
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token,
+    );
+
+    return { success: "Confirmation email sent!" };
+  } catch (error) {
+    console.log(error);
+    return { error: "Failed to create user!" };
+  }
 };

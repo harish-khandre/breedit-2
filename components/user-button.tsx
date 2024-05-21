@@ -24,7 +24,7 @@ export const UserButton = () => {
 
   if (!user) {
     return (
-      <LoginButton asChild>
+      <LoginButton mode="redirect" asChild>
         <Button>Sign in</Button>
       </LoginButton>
     );

@@ -69,13 +69,19 @@ export const generateVerificationToken = async (email: string) => {
   }
 
   // Create a new verification token
-  const verificationToken = await db.verificationToken.create({
-    data: {
-      email,
-      token,
-      expires: expirationTime,
-    },
-  });
 
-  return verificationToken;
+  try {
+    const verificationToken = await db.verificationToken.create({
+      data: {
+        email,
+        token,
+        expires: expirationTime,
+      },
+    });
+
+    console.log("generateVerificationToken success");
+    return verificationToken;
+  } catch (error) {
+    console.log("generateVerificationToken error:", error);
+  }
 };
