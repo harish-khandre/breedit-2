@@ -16,10 +16,13 @@ export default function Navbar() {
   const [state, setState] = useState(false);
 
   const navigation: NavigationItem[] = [
-    { title: "Features", path: "/features" },
-    { title: "Integrations", path: "" },
-    { title: "Customers", path: "" },
-    { title: "Pricing", path: "" },
+    { title: "Home", path: "/" },
+    { title: "Find Pet", path: "/findpet" },
+    { title: "Chat", path: "/chat" },
+    { title: "Profile", path: "/profile" },
+    { title: "Dashboard", path: "/dashboard" },
+    { title: "Pet Store", path: "/petstore" },
+    { title: "Services", path: "/services" },
   ];
 
   const pathname = usePathname();
@@ -29,7 +32,7 @@ export default function Navbar() {
       <div className="items-center px-4 max-w-screen-xl mx-auto md:flex md:px-8">
         <div className="flex items-center justify-between py-3 md:py-5 md:block">
           <Link href="/">
-            <Image src="/breedit.png" width={50} height={50} alt="Breedti" />
+            <Image src="/breedit.png" width={50} height={50} alt="Breedit" />
           </Link>
           <div className="md:hidden">
             <button
@@ -71,11 +74,11 @@ export default function Navbar() {
         <div
           className={`flex-1 pb-3 mt-8 md:block md:pb-0 md:mt-0 ${state ? "block" : "hidden"}`}
         >
-          <ul className="justify-end items-center space-y-6 md:flex md:space-x-6 md:space-y-0">
+          <ul className="justify-end items-center space-y-6 md:flex md:space-x-1 md:space-y-0">
             {navigation.map((item, idx) => (
               <Button
                 key={idx}
-                variant={pathname === `${item.path}` ? "default" : "link"}
+                variant={pathname === `${item.path}` ? "ghost" : "link"}
                 className=""
               >
                 <Link href={item.path} className="block">
