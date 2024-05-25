@@ -1,5 +1,9 @@
-import Image from "next/image";
+import { BackgroundBeamsDemo } from "@/components/waiting-list";
 
 export default function Home() {
-  return <div> Home</div>;
+  return (
+    <div>
+      <BackgroundBeamsDemo />
+    </div>
+  );
 }

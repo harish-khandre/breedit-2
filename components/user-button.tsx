@@ -5,7 +5,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { GoGear } from "react-icons/go";
@@ -22,13 +21,18 @@ import LoginButton from "./auth/login-button";
 export const UserButton = () => {
   const user = useCurrentUser();
 
-  if (!user) {
+  // until site is all partially done
+  if(!user) {
+    return;
+  }
+
+  /* if (!user) {
     return (
       <LoginButton mode="redirect" asChild>
         <Button>Sign in</Button>
       </LoginButton>
     );
-  }
+  } */
 
   return (
     <DropdownMenu>

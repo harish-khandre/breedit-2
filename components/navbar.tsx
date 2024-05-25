@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { UserButton } from "./user-button";
 import Image from "next/image";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface NavigationItem {
   title: string;
@@ -14,6 +15,7 @@ interface NavigationItem {
 
 export default function Navbar() {
   const [state, setState] = useState(false);
+  const user = useCurrentUser();
 
   const navigation: NavigationItem[] = [
     { title: "Home", path: "/" },
@@ -36,7 +38,7 @@ export default function Navbar() {
           </Link>
           <div className="md:hidden">
             <button
-              className="text-gray-500 hover:text-gray-800"
+              className="text-gray-500 hover:text-orange-800"
               onClick={() => setState(!state)}
             >
               {state ? (
@@ -74,25 +76,28 @@ export default function Navbar() {
         <div
           className={`flex-1 pb-3 mt-8 md:block md:pb-0 md:mt-0 ${state ? "block" : "hidden"}`}
         >
-          <ul className="justify-end items-center space-y-6 md:flex md:space-x-1 md:space-y-0">
-            {navigation.map((item, idx) => (
-              <Button
-                key={idx}
-                variant={pathname === `${item.path}` ? "ghost" : "link"}
-                className=""
-              >
-                <Link href={item.path} className="block">
-                  {item.title}
-                </Link>
-              </Button>
-            ))}
-            <span className="hidden w-px h-6 bg-gray-300 md:block"></span>
-            <div className="space-y-3 items-center gap-x-6 md:flex md:space-y-0">
-              <li>
-                <UserButton />
-              </li>
-            </div>
-          </ul>
+          {/* Till site is done partially */ }
+          {user && (
+            <ul className="justify-end items-center space-y-6 md:flex  md:space-y-0">
+              {navigation.map((item, idx) => (
+                <Button
+                  key={idx}
+                  variant={pathname === `${item.path}` ? "ghost" : "link"}
+                  className=""
+                >
+                  <Link href={item.path} className="block">
+                    {item.title}
+                  </Link>
+                </Button>
+              ))}
+              <span className="hidden w-px h-6 bg-gray-300 md:block"></span>
+              <div className="space-y-3 items-center gap-x-6 md:flex md:space-y-0">
+                <li className="mx-3">
+                  <UserButton />
+                </li>
+              </div>
+            </ul>
+          )}
         </div>
       </div>
     </nav>
