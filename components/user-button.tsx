@@ -21,18 +21,13 @@ import LoginButton from "./auth/login-button";
 export const UserButton = () => {
   const user = useCurrentUser();
 
-  // until site is all partially done
-  if(!user) {
-    return;
-  }
-
-  /* if (!user) {
+  if (!user) {
     return (
       <LoginButton mode="redirect" asChild>
         <Button>Sign in</Button>
       </LoginButton>
     );
-  } */
+  }
 
   return (
     <DropdownMenu>
