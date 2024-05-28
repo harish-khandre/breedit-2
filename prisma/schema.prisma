@@ -66,14 +66,13 @@ model Donate {
 
 model Pet {
   id        String   @id @default(cuid())
-  name      String
+  petName   String
   about     String?
   age       String?
   breed     String?
-  matches   String[]
+  matches   String[] @default([])
   image     String
   gender    String
-  mate      Boolean?
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
