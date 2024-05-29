@@ -1,5 +1,20 @@
 import * as z from "zod";
 
+export const DonateSchema = z.object ({
+  petName: z.string().min(3, { message: "Minimum 3 characters required" }),
+  age: z.string(),
+  breed: z.string().min(3, { message: "Minimum 3 characters required" }),
+  gender: z.string(),
+  about: z.string(),
+  number: z.string(),
+  image:
+    typeof window === "undefined"
+      ? z.any()
+      : z
+          .instanceof(FileList)
+          .refine((file) => file?.length == 1, "File is required."),
+})
+
 export const OnBoardingSchema = z.object({
   petName: z.string().min(3, { message: "Minimum 3 characters required" }),
   age: z.string(),
@@ -9,10 +24,9 @@ export const OnBoardingSchema = z.object({
   image:
     typeof window === "undefined"
       ? z.any()
-      : z
-          .instanceof(FileList)
-          .refine((file) => file?.length == 1, "File is required."),
-});
+      :z.instanceof(File).refine((file) => file.size < 7000000, {
+    message: 'Image must be less than 7MB.',
+  }),});
 
 export const SettingsSchema = z
   .object({

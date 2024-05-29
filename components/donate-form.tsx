@@ -17,9 +17,9 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { useState, useTransition } from "react";
-import { onboarding } from "@/actions/onboarding";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import Link from "next/link";
+import { donate } from "@/actions/donate";
 
 export const OnBoardingForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -35,43 +35,27 @@ export const OnBoardingForm = () => {
       breed: "",
       gender: "",
       image: undefined,
+      number: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof OnBoardingSchema>) => {
+  const fileRef = form.register("image");
+
+  const onSubmit = (values: z.infer<typeof OnBoardingSchema>) => {
     setError("");
     setSuccess("");
 
     console.log(values);
 
-    startTransition(async () => {
-      try {
-        const formData = new FormData();
-        formData.append("about", values.about);
-        formData.append("age", values.age);
-        formData.append("breed", values.breed);
-        formData.append("gender", values.gender);
-        formData.append("image", values.image);
-        formData.append("petName", values.petName);
+    const data = JSON.parse(JSON.stringify(values))
 
-        const response = await fetch("/api/onboarding", {
-          method: "POST",
-          body: formData,
-        });
+    console.log(data);
 
-        const result = await response.json();
-
-        if (response.ok) {
-          setSuccess(result.success);
-          setError("");
-        } else {
-          setSuccess("");
-          setError(result.error);
-        }
-      } catch (error) {
-        setError("An error occurred while submitting the form.");
-        setSuccess("");
-      }
+    startTransition(() => {
+      donate(data).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+      });
     });
   };
 
@@ -109,6 +93,24 @@ export const OnBoardingForm = () => {
 
               <FormField
                 control={form.control}
+                name="number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Number</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="1"
+                        type="number"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="age"
                 render={({ field }) => (
                   <FormItem>
@@ -142,6 +144,7 @@ export const OnBoardingForm = () => {
                   </FormItem>
                 )}
               />
+              //
               <FormField
                 control={form.control}
                 name="gender"
@@ -179,18 +182,11 @@ export const OnBoardingForm = () => {
               <FormField
                 control={form.control}
                 name="image"
-                render={({ field: { value, onChange, ...fieldProps } }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image</FormLabel>
                     <FormControl>
-                      <Input
-                        {...fieldProps}
-                        onChange={(event) =>
-                          onChange(event.target.files && event.target.files[0])
-                        }
-                        disabled={isPending}
-                        type="file"
-                      />
+                      <Input {...fileRef} disabled={isPending} type="file" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
