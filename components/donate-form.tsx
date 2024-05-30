@@ -11,51 +11,71 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import * as z from "zod";
-import { OnBoardingSchema } from "@/types";
+import { DonateSchema } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { useState, useTransition } from "react";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
-import Link from "next/link";
-import { donate } from "@/actions/donate";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { Checkbox } from "./ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Textarea } from "./ui/textarea";
 
-export const OnBoardingForm = () => {
+export const DonateForm = () => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
-  const form = useForm<z.infer<typeof OnBoardingSchema>>({
-    resolver: zodResolver(OnBoardingSchema),
+  const form = useForm<z.infer<typeof DonateSchema>>({
+    resolver: zodResolver(DonateSchema),
     defaultValues: {
-      petName: "",
+      name: "",
       age: undefined,
-      about: "",
+      isVaccinated: false,
       breed: "",
       gender: "",
+      reason: "",
+      healthCondition: "",
       image: undefined,
-      number: "",
+      phone: undefined,
+      address: "",
     },
   });
 
-  const fileRef = form.register("image");
-
-  const onSubmit = (values: z.infer<typeof OnBoardingSchema>) => {
+  const onSubmit = async (values: z.infer<typeof DonateSchema>) => {
     setError("");
     setSuccess("");
 
-    console.log(values);
+    startTransition(async () => {
+      try {
+        const formData = new FormData();
+        Object.entries(values).forEach(([key, value]) => {
+          if (value !== undefined) {
+            formData.append(key, value.toString());
+          }
+        });
 
-    const data = JSON.parse(JSON.stringify(values))
+        const response = await fetch("/api/donate", {
+          method: "POST",
+          body: formData,
+        });
 
-    console.log(data);
-
-    startTransition(() => {
-      donate(data).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
-      });
+        if (response.status === 200) {
+          setSuccess("Form submitted!");
+        } else {
+          setError("Something went wrong!");
+        }
+      } catch (error) {
+        console.log(error);
+        setError("An error occurred while submitting the form.");
+      }
     });
   };
 
@@ -75,7 +95,7 @@ export const OnBoardingForm = () => {
             <div className="space-y-4">
               <FormField
                 control={form.control}
-                name="petName"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Pet Name</FormLabel>
@@ -84,25 +104,6 @@ export const OnBoardingForm = () => {
                         {...field}
                         disabled={isPending}
                         placeholder="John Doe's dog"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="number"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Number</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isPending}
-                        placeholder="1"
-                        type="number"
                       />
                     </FormControl>
                     <FormMessage />
@@ -121,6 +122,7 @@ export const OnBoardingForm = () => {
                         disabled={isPending}
                         placeholder="1"
                         type="number"
+                        max="20"
                       />
                     </FormControl>
                     <FormMessage />
@@ -144,18 +146,41 @@ export const OnBoardingForm = () => {
                   </FormItem>
                 )}
               />
-              //
               <FormField
                 control={form.control}
                 name="gender"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Gender</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Gender of your pet" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="reason"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reason</FormLabel>
                     <FormControl>
-                      <Input
+                      <Textarea
+                        placeholder="Tell us reason of donation"
+                        className="resize-none"
                         {...field}
-                        disabled={isPending}
-                        placeholder="Male"
                       />
                     </FormControl>
                     <FormMessage />
@@ -164,29 +189,87 @@ export const OnBoardingForm = () => {
               />
               <FormField
                 control={form.control}
-                name="about"
+                name="healthCondition"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>About</FormLabel>
+                    <FormLabel>Health condition of pet</FormLabel>
                     <FormControl>
-                      <Input
+                      <Textarea
+                        placeholder="Tell us about health condition of your pet"
+                        className="resize-none"
                         {...field}
-                        disabled={isPending}
-                        placeholder="He likes to play fetch."
                       />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="isVaccinated"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormLabel>is your pet vaccinated?</FormLabel>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
                 name="image"
-                render={({ field }) => (
+                render={({ field: { value, onChange, ...fieldProps } }) => (
                   <FormItem>
                     <FormLabel>Image</FormLabel>
                     <FormControl>
-                      <Input {...fileRef} disabled={isPending} type="file" />
+                      <Input
+                        {...fieldProps}
+                        onChange={(event) =>
+                          onChange(event.target.files && event.target.files[0])
+                        }
+                        disabled={isPending}
+                        type="file"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone no.</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        type="tel"
+                        placeholder="123456789"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        type="tel"
+                        placeholder="xyz street, abc city, 123456"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -201,11 +284,6 @@ export const OnBoardingForm = () => {
           </form>
         </Form>
       </CardContent>
-      <CardFooter>
-        <Link href="/pet/findmate" className="text-primary">
-          Already Registered?
-        </Link>
-      </CardFooter>
     </Card>
   );
 };

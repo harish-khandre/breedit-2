@@ -17,7 +17,7 @@ const s3 = new S3Client({
 export async function uploadFileToS3(file: File) {
   const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-  const maxFileSize = 10 * 1024 * 1024; // 10 MB
+  const maxFileSize = 5 * 1024 * 1024; // 10 MB
 
   if (fileBuffer.length > maxFileSize) {
     throw new Error("File is too large");
