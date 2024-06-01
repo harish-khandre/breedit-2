@@ -7,6 +7,16 @@ import { Button } from "./ui/button";
 import { UserButton } from "./user-button";
 import Image from "next/image";
 import { ModeToggle } from "./mode-toggle";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "./ui/navigation-menu";
+import { cn } from "@/lib/cn";
+import React from "react";
 
 interface NavigationItem {
   title: string;
@@ -20,8 +30,6 @@ export default function Navbar() {
     { title: "Home", path: "/" },
     { title: "Chat", path: "/chat" },
     { title: "Profile", path: "/profile" },
-    { title: "Dashboard", path: "/dashboard" },
-    { title: "Pet Services", path: "/services" },
   ];
 
   const pathname = usePathname();
@@ -79,6 +87,7 @@ export default function Navbar() {
               <Button
                 key={idx}
                 variant={pathname === `${item.path}` ? "ghost" : "link"}
+                size="lg"
                 className=""
               >
                 <Link href={item.path} className="block">
@@ -86,12 +95,28 @@ export default function Navbar() {
                 </Link>
               </Button>
             ))}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-primary">
+                    Pet
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[300px] gap-3 p-4 md:w-[300px] md:grid-cols-2 lg:w-[300px] ">
+                      <ListItem title="Pet services" href="/pet/services" />
+                      <ListItem title="Adopt Pet" href="/pet/adopt" />
+                      <ListItem title="Find Mate" href="/pet/findmate" />
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
             <span className="hidden w-px h-6 bg-primary-foreground md:block"></span>
             <div className="space-y-3 items-center gap-x-6 md:flex md:space-y-0">
-              <li className="mx-3">
+              <li className="ml-4">
                 <UserButton />
               </li>
-              <li>
+              <li className="m-1 pb-1">
                 <ModeToggle />
               </li>
             </div>
@@ -101,3 +126,28 @@ export default function Navbar() {
     </nav>
   );
 }
+
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className,
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none text-center">
+            {title}
+          </div>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";

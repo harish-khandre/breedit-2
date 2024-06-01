@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ success: "Form submitted!" });
+    return NextResponse.json({ message: "Form submitted!" });
   } catch (error) {
     console.error("Error storing data :", error);
     return NextResponse.json({ error: "Failed to register" });

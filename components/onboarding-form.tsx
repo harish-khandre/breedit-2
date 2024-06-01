@@ -19,6 +19,13 @@ import { FormSuccess } from "@/components/form-success";
 import { useState, useTransition } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 export const OnBoardingForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -58,14 +65,12 @@ export const OnBoardingForm = () => {
           body: formData,
         });
 
-        const result = await response.json();
-
         if (response.ok) {
-          setSuccess(result.success);
+          setSuccess("Form submitted successfully.");
           setError("");
         } else {
           setSuccess("");
-          setError(result.error);
+          setError("Something went wrong while submitting the form.");
         }
       } catch (error) {
         setError("An error occurred while submitting the form.");
@@ -147,13 +152,20 @@ export const OnBoardingForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Gender</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isPending}
-                        placeholder="Male"
-                      />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Gender of your pet" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

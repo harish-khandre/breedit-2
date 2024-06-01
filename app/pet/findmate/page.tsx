@@ -1,4 +1,4 @@
-import SwipeCard from "@/components/swipe-card";
+import { SwipeCard } from "@/components/swipe-card";
 
 export default function FindPet() {
   return (
