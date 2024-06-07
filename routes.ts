@@ -3,7 +3,7 @@
  * @type {string[]}
  */
 
-export const publicRoutes = ["/", "/auth/new-verification"];
+export const publicRoutes = ["/", "/auth/new-verification", "/pet/donate"];
 
 /*
  * Routes used for authentication

@@ -15,6 +15,7 @@ const s3 = new S3Client({
 });
 
 export async function uploadFileToS3(file: File) {
+  console.log("aws signing")
   const fileBuffer = Buffer.from(await file.arrayBuffer());
 
   const maxFileSize = 5 * 1024 * 1024; // 10 MB

@@ -17,8 +17,6 @@ export async function POST(req: Request) {
   const address = formData.get("address");
   const phone = formData.get("phone");
 
-  console.log(formData);
-
   if (!(image instanceof File)) {
     return NextResponse.json({ error: "File not found" });
   }

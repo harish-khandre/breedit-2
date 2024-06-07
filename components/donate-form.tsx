@@ -58,7 +58,7 @@ export const DonateForm = () => {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
           if (value !== undefined) {
-            formData.append(key, value.toString());
+            formData.append(key, value);
           }
         });
 
@@ -66,6 +66,7 @@ export const DonateForm = () => {
           method: "POST",
           body: formData,
         });
+
 
         if (response.status === 200) {
           setSuccess("Form submitted!");
