@@ -1,5 +1,7 @@
+"use client"
 import { SwipeUsers } from "@/actions/swipe";
 import { updateMatches } from "@/actions/update-matches";
+import { useEffect, useState } from "react";
 import TinderCard from "react-tinder-card";
 
 const swiped = (direction: string, swipedUserId: string) => {
@@ -12,7 +14,23 @@ const outOfFrame = (name: string) => {
   console.log(`${name} left the screen!`);
 };
 
-export const SwipeCard = async () => {
+export const SwipeCard = () => {
+
+  const [filteredGenderedUsers,setFilteredGenderedUsers] = useState<[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await SwipeUsers();
+        setFilteredGenderedUsers(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="dashboard overflow-hidden">
       <div className="swipe-container">
