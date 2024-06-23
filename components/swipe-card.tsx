@@ -1,6 +1,7 @@
 "use client"
-import { SwipeUsers } from "@/actions/swipe";
+import { SwipeUsers, getOpositeGenderUsers } from "@/actions/swipe";
 import { updateMatches } from "@/actions/update-matches";
+import { currentUser } from "@/lib/user-from-server";
 import { useEffect, useState } from "react";
 import TinderCard from "react-tinder-card";
 
@@ -27,7 +28,6 @@ export const SwipeCard = () => {
         console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
   }, []);
 

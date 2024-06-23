@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { currentUser } from "@/lib/user-from-server";
 import { User } from "@prisma/client";
 
-const matchedUsers = async (userId: string) => {
+const matchedUsers = async (userId: string | undefined) => {
   const users = await db.pet.findMany({
     where: {
       userId,
@@ -15,10 +15,13 @@ const matchedUsers = async (userId: string) => {
   return users;
 };
 
-const getOpositeGenderUsers = async (userId: string) => {
+export const getOpositeGenderUsers = async (userId: string | undefined) => {
+
+  const user = await currentUser();
+
   const userPet = await db.pet.findFirst({
     where: {
-      userId: userId,
+      userId: user?.id,
     },
   });
 
@@ -42,7 +45,7 @@ export const SwipeUsers = async () => {
   if (!user) {
     return { error: "User not found" };
   }
-  const userId = user.userId;
+  const userId = user.id;
 
   const genderedUsers = await getOpositeGenderUsers(userId);
   const matchedUser = await matchedUsers(userId);
